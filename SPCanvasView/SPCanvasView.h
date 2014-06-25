@@ -9,12 +9,14 @@
 #import <UIKit/UIKit.h>
 
 typedef enum {
-    SPCanvasTouchModePencel,
+    SPCanvasTouchModePencil,
     SPCanvasTouchModeEraser,
+    SPCanvasTouchModePaintBucket,
 }SPCanvasTouchMode;
 
 @interface SPCanvasView : UIView
 
 @property (assign, nonatomic) SPCanvasTouchMode currentTouchMode;
+@property (strong, nonatomic) UIColor *paintBucketColor;
 
 @end

@@ -16,6 +16,7 @@
 
 @end
 
+#pragma mark - Init
 @implementation SPCanvasView
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -44,13 +45,70 @@
     [self.drawingPath setLineWidth:20.0];
 }
 
+#pragma mark - Touch
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (self.currentTouchMode == SPCanvasTouchModePaintBucket) {
+        [self filling];
+    }
+    else {
+        UITouch *touch = [touches anyObject];
+        CGPoint location = [touch locationInView:self];
+    
+        [self.drawingPath moveToPoint:location];
+        lastPoint = location;
+        [self setNeedsDisplay];
+    }
+    
+    NSLog(@"Touch Began");
+}
 
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    
+    if (self.currentTouchMode == SPCanvasTouchModePaintBucket) {
+        [self filling];
+    }
+    else {
+        UITouch *touch = [touches anyObject];
+        CGPoint location = [touch locationInView:self];
+    
+        [self.drawingPath addLineToPoint:location];
+    
+        [self setNeedsDisplay];
+    }
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.currentTouchMode == SPCanvasTouchModePaintBucket) {
+        [self filling];
+    }
+    else {
+        [self touchesMoved:touches withEvent:event];
+    }
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    if (self.currentTouchMode != SPCanvasTouchModePaintBucket) {
+        [self touchesMoved:touches withEvent:event];
+    }
+}
+
+#pragma mark getter/setter
+- (UIColor *)paintBucketColor {
+    if (_paintBucketColor) {
+        return _paintBucketColor;
+    }
+    
+    return [UIColor whiteColor];
+}
+
+#pragma mark - drawing
 - (void)drawRect:(CGRect)rect
 {
     [super drawRect:rect];
     
     
-
+    
     CGContextRef context = UIGraphicsGetCurrentContext();
     
     CGContextClearRect(context, rect);
@@ -62,7 +120,7 @@
     CGContextAddLineToPoint(context, self.frame.size.width, self.frame.size.height);
     CGContextAddLineToPoint(context, 0, self.frame.size.height);
     CGContextAddLineToPoint(context, 0, 0);
-
+    
     CGContextFillPath(context);
     
     if (self.currentTouchMode == SPCanvasTouchModeEraser) {
@@ -73,39 +131,15 @@
 - (void)eraseInContext:(CGContextRef)context
 {
     UIGraphicsPushContext( context );
-
+    
     CGContextSetBlendMode( context, kCGBlendModeClear );
     [self.drawingPath stroke];
     
     UIGraphicsPopContext();
 }
 
-- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint location = [touch locationInView:self];
-    
-    [self.drawingPath moveToPoint:location];
-    lastPoint = location;
-    [self setNeedsDisplay];
-    
-    NSLog(@"Touch Began");
-}
+- (void)filling {
 
-- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-    UITouch *touch = [touches anyObject];
-    CGPoint location = [touch locationInView:self];
-    
-    [self.drawingPath addLineToPoint:location];
-    
-    [self setNeedsDisplay];
-}
-
-- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self touchesMoved:touches withEvent:event];
-}
-
-- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
-    [self touchesMoved:touches withEvent:event];
 }
 
 @end
