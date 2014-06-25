@@ -8,7 +8,11 @@
 
 #import "ExampleViewController.h"
 
+#import "SPCanvasView.h"
+
 @interface ExampleViewController ()
+
+@property (weak, nonatomic) IBOutlet SPCanvasView *canvasView;
 
 @end
 
@@ -27,6 +31,10 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    
+    self.canvasView.layer.borderWidth = 1.0;
+    self.canvasView.layer.borderColor = [UIColor colorWithRed:220.0f / 255.0f green:218.0f / 255.0f blue:218.0f / 255.0f alpha:1].CGColor;
+    [self.canvasView setCurrentTouchMode:SPCanvasTouchModeEraser];
 }
 
 - (void)didReceiveMemoryWarning

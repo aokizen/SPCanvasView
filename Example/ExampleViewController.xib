@@ -7,6 +7,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ExampleViewController">
             <connections>
+                <outlet property="canvasView" destination="dxk-J4-OeP" id="ExC-R0-8Ih"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -16,12 +17,12 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" id="dxk-J4-OeP" customClass="SPCanvasView">
-                    <rect key="frame" x="20" y="34" width="280" height="500"/>
+                    <rect key="frame" x="20" y="184" width="280" height="200"/>
                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <color key="backgroundColor" red="0.95294117647058818" green="0.95294117647058818" blue="0.94117647058823528" alpha="1" colorSpace="calibratedRGB"/>
                 </view>
             </subviews>
-            <color key="backgroundColor" red="0.99607843139999996" green="0.96862745100000003" blue="0.89411764709999997" alpha="1" colorSpace="calibratedRGB"/>
+            <color key="backgroundColor" red="0.97254901960784312" green="0.97254901960784312" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics"/>
             <simulatedScreenMetrics key="simulatedDestinationMetrics" type="retina4"/>
         </view>

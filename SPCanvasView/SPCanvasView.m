@@ -8,6 +8,14 @@
 
 #import "SPCanvasView.h"
 
+@interface SPCanvasView () {
+    CGPoint lastPoint;
+}
+
+@property (strong, nonatomic) UIBezierPath *drawingPath;
+
+@end
+
 @implementation SPCanvasView
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
@@ -29,15 +37,75 @@
 
 - (void)commonInit {
     
+    [self setBackgroundColor:[UIColor clearColor]];
+    
+    self.drawingPath = [UIBezierPath bezierPath];
+    [self.drawingPath moveToPoint:CGPointZero];
+    [self.drawingPath setLineWidth:20.0];
 }
 
-/*
-// Only override drawRect: if you perform custom drawing.
-// An empty implementation adversely affects performance during animation.
+
 - (void)drawRect:(CGRect)rect
 {
-    // Drawing code
+    [super drawRect:rect];
+    
+    
+
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    
+    CGContextClearRect(context, rect);
+    
+    CGContextSetFillColorWithColor(context, [UIColor colorWithRed:139.0f / 255.0f green:226.0f / 255.0f blue:202.0f / 255.0f alpha:1].CGColor);
+    
+    CGContextMoveToPoint(context, 0, 0);
+    CGContextAddLineToPoint(context, self.frame.size.width, 0);
+    CGContextAddLineToPoint(context, self.frame.size.width, self.frame.size.height);
+    CGContextAddLineToPoint(context, 0, self.frame.size.height);
+    CGContextAddLineToPoint(context, 0, 0);
+
+    CGContextFillPath(context);
+    
+    if (self.currentTouchMode == SPCanvasTouchModeEraser) {
+        [self eraseInContext:context];
+    }
 }
-*/
+
+- (void)eraseInContext:(CGContextRef)context
+{
+    UIGraphicsPushContext( context );
+
+    CGContextSetBlendMode( context, kCGBlendModeClear );
+    [self.drawingPath stroke];
+    
+    UIGraphicsPopContext();
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self];
+    
+    [self.drawingPath moveToPoint:location];
+    lastPoint = location;
+    [self setNeedsDisplay];
+    
+    NSLog(@"Touch Began");
+}
+
+- (void)touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+    UITouch *touch = [touches anyObject];
+    CGPoint location = [touch locationInView:self];
+    
+    [self.drawingPath addLineToPoint:location];
+    
+    [self setNeedsDisplay];
+}
+
+- (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self touchesMoved:touches withEvent:event];
+}
+
+- (void)touchesCancelled:(NSSet *)touches withEvent:(UIEvent *)event {
+    [self touchesMoved:touches withEvent:event];
+}
 
 @end
